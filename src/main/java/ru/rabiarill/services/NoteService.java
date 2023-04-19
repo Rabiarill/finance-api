@@ -1,7 +1,6 @@
 package ru.rabiarill.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rabiarill.exception.model.NoAccessException;
@@ -9,7 +8,7 @@ import ru.rabiarill.exception.model.note.NoteNotFoundException;
 import ru.rabiarill.models.note.Note;
 import ru.rabiarill.models.user.User;
 import ru.rabiarill.repositories.NoteRepository;
-import ru.rabiarill.util.security.UserDetailsImpl;
+import ru.rabiarill.util.security.UserUtil;
 
 import java.util.List;
 
@@ -18,10 +17,12 @@ import java.util.List;
 public class NoteService {
 
    private final NoteRepository noteRepository;
+   private final UserUtil userUtil;
 
    @Autowired
-   public NoteService(NoteRepository noteRepository) {
+   public NoteService(NoteRepository noteRepository, UserUtil userUtil) {
       this.noteRepository = noteRepository;
+      this.userUtil = userUtil;
    }
 
    public List<Note> findAll(){
@@ -35,13 +36,13 @@ public class NoteService {
    }
 
    public List<Note> findByOwner() {
-      int ownerId = getUserFromContextHolder().getId();
+      int ownerId = userUtil.getUserFromContextHolder().getId();
       return noteRepository.findByOwnerId(ownerId);
    }
 
    @Transactional
    public void save(Note note) {
-      User sender = getUserFromContextHolder();
+      User sender = userUtil.getUserFromContextHolder();
 
       note.setOwner(sender);
 
@@ -51,7 +52,7 @@ public class NoteService {
    @Transactional
    public void update(Note noteToUpdate, int id) throws NoAccessException, NoteNotFoundException {
       Note noteDB = this.findOne(id);
-      User sender = getUserFromContextHolder();
+      User sender = userUtil.getUserFromContextHolder();
 
       if (!hasAccess(sender, noteDB))
          throw new NoAccessException("You should be owner of note or has role \"ADMIN\"");
@@ -62,7 +63,7 @@ public class NoteService {
 
    @Transactional
    public void delete(int id) throws NoteNotFoundException, NoAccessException {
-      User sender = getUserFromContextHolder();
+      User sender = userUtil.getUserFromContextHolder();
       Note note  = this.findOne(id);
 
       if (!hasAccess(sender, note))
@@ -74,13 +75,5 @@ public class NoteService {
    private boolean hasAccess(User sender, Note note) {
       return sender.getId() == note.getOwner().getId() || sender.idAdmin();
    }
-
-   private User getUserFromContextHolder(){
-      UserDetailsImpl authentication = (UserDetailsImpl) SecurityContextHolder
-              .getContext().getAuthentication().getPrincipal();
-
-      return authentication.getUser();
-   }
-
 
 }

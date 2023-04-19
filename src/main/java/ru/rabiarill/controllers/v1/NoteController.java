@@ -34,19 +34,6 @@ public class NoteController {
       return new ResponseEntity<>(response, HttpStatus.OK);
    }
 
-   @PostMapping()
-   public ResponseEntity<HttpStatus> create(@RequestBody @Valid NoteDTO noteDTO,
-                                            BindingResult bindingResult) {
-      if (bindingResult.hasErrors())
-         throw new NotValidNoteException();
-
-      Note noteToSave = noteDTO.convertToNote();
-
-      noteService.save(noteToSave);
-
-      return new ResponseEntity<>(HttpStatus.CREATED);
-   }
-
    @PutMapping("/{id}")
    public ResponseEntity<HttpStatus> update(@RequestBody @Valid NoteDTO noteDTO,
                                             BindingResult bindingResult,
