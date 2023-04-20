@@ -3,7 +3,6 @@ package ru.rabiarill.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rabiarill.exception.model.NoAccessException;
 import ru.rabiarill.exception.model.note.NoteNotFoundException;
 import ru.rabiarill.models.note.Note;
 import ru.rabiarill.models.user.User;
@@ -50,30 +49,14 @@ public class NoteService {
    }
 
    @Transactional
-   public void update(Note noteToUpdate, int id) throws NoAccessException, NoteNotFoundException {
-      Note noteDB = this.findOne(id);
-      User sender = userUtil.getUserFromContextHolder();
-
-      if (!hasAccess(sender, noteDB))
-         throw new NoAccessException("You should be owner of note or has role \"ADMIN\"");
-
-      noteDB.updateFields(noteToUpdate);
-      noteRepository.save(noteDB);
+   public void update(Note noteToUpdate, int id) throws NoteNotFoundException {
+      noteToUpdate.setId(id);
+      noteRepository.save(noteToUpdate);
    }
 
    @Transactional
-   public void delete(int id) throws NoteNotFoundException, NoAccessException {
-      User sender = userUtil.getUserFromContextHolder();
-      Note note  = this.findOne(id);
-
-      if (!hasAccess(sender, note))
-         throw new NoAccessException("You should be owner of note or has role \"ADMIN\"");
-
+   public void delete(int id) {
       noteRepository.deleteById(id);
-   }
-
-   private boolean hasAccess(User sender, Note note) {
-      return sender.getId() == note.getOwner().getId() || sender.idAdmin();
    }
 
 }

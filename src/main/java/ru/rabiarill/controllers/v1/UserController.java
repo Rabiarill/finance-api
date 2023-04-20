@@ -41,7 +41,7 @@ public class UserController {
 
    @PutMapping()
    public ResponseEntity<HttpStatus> update(@RequestBody @Valid UserDTO userDTO,
-                                            BindingResult bindingResult) throws NoAccessException {
+                                            BindingResult bindingResult) {
       if (bindingResult.hasErrors())
          throw new NotValidUserException();
 

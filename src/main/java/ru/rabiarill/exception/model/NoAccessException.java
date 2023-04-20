@@ -1,6 +1,6 @@
 package ru.rabiarill.exception.model;
 
-public class NoAccessException extends Exception {
+public class NoAccessException extends RuntimeException {
    public NoAccessException() {
    }
 
