@@ -1,6 +1,6 @@
 package ru.rabiarill.exception.model.note;
 
-public class NoteNotFoundException extends Exception {
+public class NoteNotFoundException extends RuntimeException {
    public NoteNotFoundException() {
    }
 
