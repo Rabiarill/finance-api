@@ -4,7 +4,8 @@ public class JwtTokenDTO {
 
    private String token;
 
-   public JwtTokenDTO() { }
+   public JwtTokenDTO() {
+   }
 
    public JwtTokenDTO(String token) {
       this.token = token;

@@ -7,7 +7,7 @@ import ru.rabiarill.models.user.User;
 
 @Component
 public class UserUtil {
-   public User getUserFromContextHolder(){
+   public User getUserFromContextHolder() {
       UserDetailsImpl authentication = (UserDetailsImpl) SecurityContextHolder
               .getContext().getAuthentication().getPrincipal();
 

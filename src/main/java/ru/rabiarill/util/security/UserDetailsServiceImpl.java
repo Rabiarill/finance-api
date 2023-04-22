@@ -11,7 +11,7 @@ import ru.rabiarill.services.UserService;
 import java.util.Optional;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService  {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
    private final UserService userService;
 

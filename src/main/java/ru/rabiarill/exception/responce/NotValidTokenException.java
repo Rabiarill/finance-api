@@ -1,4 +1,4 @@
 package ru.rabiarill.exception.responce;
 
-public class NotValidTokenException extends RuntimeException{
+public class NotValidTokenException extends RuntimeException {
 }

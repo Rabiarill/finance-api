@@ -74,7 +74,7 @@ public class NoteDTO {
       this.transactionDate = transactionDate;
    }
 
-   public Note convertToNote(){
+   public Note convertToNote() {
       return new ModelMapper().map(this, Note.class);
    }
 

@@ -34,7 +34,8 @@ public class User {
    private List<Note> notes;
 
 
-   public User() { }
+   public User() {
+   }
 
    public User(String username, String password, String email, RoleEnum role) {
       this.username = username;
@@ -91,7 +92,7 @@ public class User {
       this.notes = notes;
    }
 
-   public UserDTO convertToUserDTO(){
+   public UserDTO convertToUserDTO() {
       return new ModelMapper().map(this, UserDTO.class);
    }
 

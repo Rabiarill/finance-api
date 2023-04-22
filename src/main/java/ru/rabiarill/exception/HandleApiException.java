@@ -11,7 +11,7 @@ import ru.rabiarill.dto.response.ErrResponse;
 public class HandleApiException {
 
    @ExceptionHandler(value = {BadCredentialsException.class})
-   public ResponseEntity<ErrResponse> handle(BadCredentialsException e){
+   public ResponseEntity<ErrResponse> handle(BadCredentialsException e) {
 
       ErrResponse errDTO = new ErrResponse(e);
 

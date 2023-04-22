@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rabiarill.dto.model.user.UserDTO;
 import ru.rabiarill.dto.security.JwtTokenDTO;
 import ru.rabiarill.dto.security.JwtUserDTO;
-import ru.rabiarill.dto.model.user.UserDTO;
 import ru.rabiarill.exception.model.user.NotValidUserException;
 import ru.rabiarill.models.user.User;
 import ru.rabiarill.services.RegistrationService;
@@ -46,7 +46,7 @@ public class AuthController {
               new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());
       try {
          authenticationManager.authenticate(authToken);
-      }catch (BadCredentialsException e){
+      } catch (BadCredentialsException e) {
          throw new BadCredentialsException("Invalid Credentials");
       }
 
@@ -57,7 +57,7 @@ public class AuthController {
 
    @PostMapping
    public ResponseEntity<JwtTokenDTO> generateJwtToken(@RequestBody @Valid UserDTO userDTO,
-                                                                   BindingResult bindingResult){
+                                                       BindingResult bindingResult) {
       if (bindingResult.hasErrors())
          throw new NotValidUserException();
 

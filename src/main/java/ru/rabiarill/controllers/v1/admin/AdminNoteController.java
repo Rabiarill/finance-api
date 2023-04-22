@@ -28,7 +28,7 @@ public class AdminNoteController {
    }
 
    @GetMapping()
-   public ResponseEntity<List<NoteDTO>> findAll(){
+   public ResponseEntity<List<NoteDTO>> findAll() {
       List<NoteDTO> noteDTO = noteService.findAll().stream()
               .map(Note::convertToDTO)
               .collect(Collectors.toList());
@@ -36,14 +36,14 @@ public class AdminNoteController {
    }
 
    @GetMapping("/{id}")
-   public ResponseEntity<NoteDTO> findOne(@PathVariable("id") int id ){
+   public ResponseEntity<NoteDTO> findOne(@PathVariable("id") int id) {
       return new ResponseEntity<>(noteService.findOne(id).convertToDTO(), HttpStatus.OK);
    }
 
    @PutMapping("/{id}")
    public ResponseEntity<HttpStatus> update(@RequestBody @Valid NoteDTO noteDTO,
-                                                BindingResult bindingResult,
-                                                @PathVariable("id") int id) {
+                                            BindingResult bindingResult,
+                                            @PathVariable("id") int id) {
       if (bindingResult.hasErrors())
          throw new NotValidNoteException();
 
@@ -58,7 +58,7 @@ public class AdminNoteController {
    }
 
    @DeleteMapping("/{id}")
-   public ResponseEntity<HttpStatus> deleteNote(@PathVariable("id") int id){
+   public ResponseEntity<HttpStatus> deleteNote(@PathVariable("id") int id) {
       noteService.delete(id);
       return new ResponseEntity<>(HttpStatus.OK);
    }

@@ -2,10 +2,12 @@ package ru.rabiarill.models.note;
 
 import org.modelmapper.ModelMapper;
 import ru.rabiarill.dto.model.note.NoteDTO;
+import ru.rabiarill.dto.statistic.StatisticByCategoryDTO;
 import ru.rabiarill.models.user.User;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +38,8 @@ public class Note {
    private LocalDateTime transactionDate;
 
 
-   public Note() { }
+   public Note() {
+   }
 
    public Note(BigDecimal amount, String category, String description, LocalDateTime transactionDate) {
       this.amount = amount;
@@ -93,7 +96,7 @@ public class Note {
       this.transactionDate = transactionDate;
    }
 
-   public NoteDTO convertToDTO(){
+   public NoteDTO convertToDTO() {
       return new ModelMapper().map(this, NoteDTO.class);
    }
 
@@ -101,6 +104,26 @@ public class Note {
       return notes.stream()
               .map(Note::convertToDTO)
               .collect(Collectors.toList());
+   }
+
+   public static StatisticByCategoryDTO createStatistic(String category, List<Note> notes) {
+      BigDecimal total = BigDecimal.valueOf(notes.stream()
+              .mapToDouble(note -> note.getAmount().doubleValue()).sum())
+              .setScale(2, RoundingMode.HALF_UP);
+
+      BigDecimal avg = BigDecimal.valueOf(notes.stream()
+              .mapToDouble(note -> note.getAmount().doubleValue()).average().orElse(0.0))
+              .setScale(2, RoundingMode.HALF_UP);
+
+      BigDecimal max = BigDecimal.valueOf(notes.stream()
+              .mapToDouble(note -> note.getAmount().doubleValue()).max().orElse(0.0))
+              .setScale(2, RoundingMode.HALF_UP);
+
+      BigDecimal min = BigDecimal.valueOf(notes.stream()
+              .mapToDouble(note -> note.getAmount().doubleValue()).min().orElse(0.0))
+              .setScale(2, RoundingMode.HALF_UP);
+
+      return new StatisticByCategoryDTO(category, total, avg, max, min);
    }
 
    public void updateFields(Note noteWithNewFields) {

@@ -33,7 +33,7 @@ public class UserController {
    }
 
    @GetMapping()
-   public ResponseEntity<UserDTO> userInfo(){
+   public ResponseEntity<UserDTO> userInfo() {
       UserDTO userDTO = userUtil.getUserFromContextHolder().convertToUserDTO();
 
       return new ResponseEntity<>(userDTO, HttpStatus.OK);
@@ -57,7 +57,7 @@ public class UserController {
 
    @DeleteMapping()
    public ResponseEntity<HttpStatus> deleteUser(@RequestBody @Valid UserDTO userDTO,
-                                                BindingResult bindingResult){
+                                                BindingResult bindingResult) {
       if (bindingResult.hasErrors())
          throw new NotValidUserException();
 
@@ -65,7 +65,7 @@ public class UserController {
               new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());
       try {
          authenticationManager.authenticate(authToken);
-      }catch (BadCredentialsException e){
+      } catch (BadCredentialsException e) {
          throw new BadCredentialsException("Invalid Credentials");
       }
       userService.delete(userDTO.getId());

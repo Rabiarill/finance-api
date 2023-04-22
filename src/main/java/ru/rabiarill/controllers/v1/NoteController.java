@@ -31,9 +31,10 @@ public class NoteController {
    }
 
    @GetMapping()
-   public ResponseEntity<List<NoteDTO>> findAll(){
+   public ResponseEntity<List<NoteDTO>> findAll() {
+      User sender = userUtil.getUserFromContextHolder();
 
-      List<NoteDTO> response = Note.convertListToDTO(noteService.findByOwner());
+      List<NoteDTO> response = Note.convertListToDTO(noteService.findByOwnerId(sender.getId()));
 
       return new ResponseEntity<>(response, HttpStatus.OK);
    }
@@ -75,7 +76,7 @@ public class NoteController {
    public ResponseEntity<HttpStatus> deleteById(@PathVariable(value = "id") int id) throws NoteNotFoundException {
 
       User sender = userUtil.getUserFromContextHolder();
-      Note note  = noteService.findOne(id);
+      Note note = noteService.findOne(id);
 
       if (!userUtil.hasAccess(sender, note))
          throw new NoAccessException("You should be owner of note or has role \"ADMIN\"");
@@ -83,7 +84,5 @@ public class NoteController {
       noteService.delete(id);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
    }
-
-
 
 }

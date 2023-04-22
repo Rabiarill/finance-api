@@ -15,7 +15,7 @@ public class JwtUtil {
    @Value("${jwt.secret}")
    private String secret;
 
-   public String generateToken(String username){
+   public String generateToken(String username) {
       return JWT
               .create()
               .withSubject("User details")
@@ -27,12 +27,12 @@ public class JwtUtil {
 
    }
 
-   public String getUsername(String token){
+   public String getUsername(String token) {
       return getVerifier().verify(token)
               .getClaim("username").asString();
    }
 
-   private JWTVerifier getVerifier(){
+   private JWTVerifier getVerifier() {
       return JWT
               .require(Algorithm.HMAC256(secret))
               .withSubject("User details")
@@ -41,16 +41,16 @@ public class JwtUtil {
 
    }
 
-   public boolean isValid(String token){
+   public boolean isValid(String token) {
       try {
          getVerifier().verify(token);
          return true;
-      }catch (Exception e){
+      } catch (Exception e) {
          return false;
       }
    }
 
-   private Date generateExpirationDate(){
+   private Date generateExpirationDate() {
       return Date.from(ZonedDateTime.now().plusMinutes(60).toInstant());
    }
 }

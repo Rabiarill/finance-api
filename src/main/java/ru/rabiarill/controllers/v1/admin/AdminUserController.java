@@ -28,7 +28,7 @@ public class AdminUserController {
    }
 
    @GetMapping()
-   public ResponseEntity<List<UserDTO>> findAllUsers(){
+   public ResponseEntity<List<UserDTO>> findAllUsers() {
       List<UserDTO> userDTO = userService.findAll().stream()
               .map(User::convertToUserDTO)
               .collect(Collectors.toList());
@@ -36,14 +36,14 @@ public class AdminUserController {
    }
 
    @GetMapping("/{id}")
-   public ResponseEntity<UserDTO> findOneUser(@PathVariable("id") int id){
+   public ResponseEntity<UserDTO> findOneUser(@PathVariable("id") int id) {
       return new ResponseEntity<>(userService.findOne(id).convertToUserDTO(), HttpStatus.OK);
    }
 
 
    @PutMapping()
    public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid UserDTO userDTO,
-                                            BindingResult bindingResult) {
+                                                BindingResult bindingResult) {
       if (bindingResult.hasErrors())
          throw new NotValidUserException();
 
@@ -54,7 +54,7 @@ public class AdminUserController {
    }
 
    @DeleteMapping("/{id}")
-   public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") int id){
+   public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") int id) {
       userService.delete(id);
       return new ResponseEntity<>(HttpStatus.OK);
    }

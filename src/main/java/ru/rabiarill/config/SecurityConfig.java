@@ -31,13 +31,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    @Override
    protected void configure(HttpSecurity http) throws Exception {
       http
-                 .csrf().disable()
-                 .authorizeRequests()
-                 .antMatchers("/finance-api/v1/auth/**").permitAll()
-                 .anyRequest().authenticated()
+              .csrf().disable()
+              .authorizeRequests()
+              .antMatchers("/finance-api/v1/auth/**").permitAll()
+              .anyRequest().authenticated()
               .and()
-                 .sessionManagement()
-                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+              .sessionManagement()
+              .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
       http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
    }
 
@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    }
 
    @Bean
-   public PasswordEncoder getPasswordEncoder(){
+   public PasswordEncoder getPasswordEncoder() {
       return new BCryptPasswordEncoder();
    }
 

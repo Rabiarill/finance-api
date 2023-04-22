@@ -65,7 +65,7 @@ public class UserDTO {
       this.role = role;
    }
 
-   public User convertToUser(){
+   public User convertToUser() {
       return new ModelMapper().map(this, User.class);
    }
 }

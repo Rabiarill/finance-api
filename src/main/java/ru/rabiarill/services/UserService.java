@@ -21,12 +21,12 @@ public class UserService {
       this.userRepository = userRepository;
    }
 
-   public List<User> findAll(){
+   public List<User> findAll() {
       return userRepository.findAll();
    }
 
    public User findOne(int id) throws UserNotFoundException {
-      return  userRepository
+      return userRepository
               .findById(id)
               .orElseThrow(() -> new UserNotFoundException("User with id = " + id + " not found"));
    }
@@ -36,12 +36,12 @@ public class UserService {
    }
 
    @Transactional
-   public void save(User user){
+   public void save(User user) {
       userRepository.save(user);
    }
 
    @Transactional
-   public void delete(int id){
+   public void delete(int id) {
       userRepository.deleteById(id);
    }
 

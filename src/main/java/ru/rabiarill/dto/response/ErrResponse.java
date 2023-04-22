@@ -11,13 +11,14 @@ public class ErrResponse {
 
    private List<ErrMessageDTO> errors = new ArrayList<>();
 
-   public ErrResponse() { }
+   public ErrResponse() {
+   }
 
    public ErrResponse(List<ErrMessageDTO> errors) {
       this.errors = errors;
    }
 
-   public ErrResponse(Exception e){
+   public ErrResponse(Exception e) {
       this.errors.add(new ErrMessageDTO(e.getMessage(), LocalDateTime.now()));
    }
 
@@ -29,7 +30,7 @@ public class ErrResponse {
       this.errors = errors;
    }
 
-   public void addError(Exception e){
+   public void addError(Exception e) {
       this.errors
               .add(new ErrMessageDTO(e.getMessage(), LocalDateTime.now()));
    }
@@ -37,7 +38,7 @@ public class ErrResponse {
    public void addErrors(BindingResult bindingResult) {
       this.errors.addAll(
               bindingResult.getAllErrors().stream()
-              .map(e -> new ErrMessageDTO(e.getObjectName() + " - " + e.getDefaultMessage(), LocalDateTime.now()))
-              .collect(Collectors.toList()));
+                      .map(e -> new ErrMessageDTO(e.getObjectName() + " - " + e.getDefaultMessage(), LocalDateTime.now()))
+                      .collect(Collectors.toList()));
    }
 }

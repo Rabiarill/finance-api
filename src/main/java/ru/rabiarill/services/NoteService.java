@@ -9,6 +9,7 @@ import ru.rabiarill.models.user.User;
 import ru.rabiarill.repositories.NoteRepository;
 import ru.rabiarill.util.security.UserUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class NoteService {
       this.userUtil = userUtil;
    }
 
-   public List<Note> findAll(){
+   public List<Note> findAll() {
       return noteRepository.findAll();
    }
 
@@ -34,9 +35,22 @@ public class NoteService {
               .orElseThrow(() -> new NoteNotFoundException("Note with id = " + id + " not found"));
    }
 
-   public List<Note> findByOwner() {
-      int ownerId = userUtil.getUserFromContextHolder().getId();
+   public List<Note> findByOwnerId(int ownerId) {
       return noteRepository.findByOwnerId(ownerId);
+   }
+
+   public List<Note> findByOwnerAndCategory(int ownerId, String category) {
+      return noteRepository.findByOwnerIdAndCategory(ownerId, category);
+   }
+
+   public List<Note> findByOwnerAndDate(int userId, LocalDateTime startDate, LocalDateTime endDate) {
+      return noteRepository.findByOwnerIdAndTransactionDateBetween(userId, startDate, endDate);
+   }
+
+   public List<Note> findByOwnerAndCategoryAndDate(int userId, String category,
+                                                   LocalDateTime startDate,
+                                                   LocalDateTime endDate) {
+      return noteRepository.findByOwnerIdAndCategoryAndTransactionDateBetween(userId, category, startDate, endDate);
    }
 
    @Transactional
