@@ -45,7 +45,7 @@ public class AdminUserController {
    public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid UserDTO userDTO,
                                                 BindingResult bindingResult) {
       if (bindingResult.hasErrors())
-         throw new NotValidUserException();
+         throw new NotValidUserException(bindingResult.getFieldErrors());
 
       User userToUpdate = userDTO.convertToUser();
       userService.save(userToUpdate);

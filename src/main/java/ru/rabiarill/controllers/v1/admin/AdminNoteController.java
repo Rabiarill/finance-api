@@ -45,7 +45,7 @@ public class AdminNoteController {
                                             BindingResult bindingResult,
                                             @PathVariable("id") int id) {
       if (bindingResult.hasErrors())
-         throw new NotValidNoteException();
+         throw new NotValidNoteException(bindingResult.getFieldErrors());
 
       Note noteDB = noteService.findOne(id);
       Note noteToUpdate = noteDTO.convertToNote();

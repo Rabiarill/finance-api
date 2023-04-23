@@ -43,7 +43,7 @@ public class NoteController {
    public ResponseEntity<HttpStatus> create(@RequestBody @Valid NoteDTO noteDTO,
                                             BindingResult bindingResult) {
       if (bindingResult.hasErrors())
-         throw new NotValidNoteException();
+         throw new NotValidNoteException(bindingResult.getFieldErrors());
 
       Note noteToSave = noteDTO.convertToNote();
 
@@ -55,9 +55,9 @@ public class NoteController {
    @PutMapping("/{id}")
    public ResponseEntity<HttpStatus> update(@RequestBody @Valid NoteDTO noteDTO,
                                             BindingResult bindingResult,
-                                            @PathVariable("id") int id) throws NoteNotFoundException {
+                                            @PathVariable("id") int id) {
       if (bindingResult.hasErrors())
-         throw new NotValidNoteException();
+         throw new NotValidNoteException(bindingResult.getFieldErrors());
 
       Note noteDB = noteService.findOne(id);
       User sender = userUtil.getUserFromContextHolder();

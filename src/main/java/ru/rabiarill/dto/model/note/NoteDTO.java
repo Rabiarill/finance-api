@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.modelmapper.ModelMapper;
 import ru.rabiarill.models.note.Note;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,6 +20,7 @@ public class NoteDTO {
    private int id;
 
    @NotNull(message = "Amount should not be null")
+   @Min(value = 0, message = "Amount should not be negative")
    private BigDecimal amount;
 
    @Size(max = 255, message = "Description length should be less than 255")

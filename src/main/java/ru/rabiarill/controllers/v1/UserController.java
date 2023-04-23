@@ -43,7 +43,7 @@ public class UserController {
    public ResponseEntity<HttpStatus> update(@RequestBody @Valid UserDTO userDTO,
                                             BindingResult bindingResult) {
       if (bindingResult.hasErrors())
-         throw new NotValidUserException();
+         throw new NotValidUserException(bindingResult.getFieldErrors());
 
       User sender = userUtil.getUserFromContextHolder();
       if (sender.getId() != userDTO.getId())
@@ -59,7 +59,7 @@ public class UserController {
    public ResponseEntity<HttpStatus> deleteUser(@RequestBody @Valid UserDTO userDTO,
                                                 BindingResult bindingResult) {
       if (bindingResult.hasErrors())
-         throw new NotValidUserException();
+         throw new NotValidUserException(bindingResult.getFieldErrors());
 
       UsernamePasswordAuthenticationToken authToken =
               new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());

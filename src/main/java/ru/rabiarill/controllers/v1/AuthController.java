@@ -40,7 +40,7 @@ public class AuthController {
    public ResponseEntity<JwtTokenDTO> login(@RequestBody @Valid JwtUserDTO userDTO,
                                             BindingResult bindingResult) throws NotValidUserException {
       if (bindingResult.hasErrors())
-         throw new NotValidUserException();
+         throw new NotValidUserException(bindingResult.getFieldErrors());
 
       UsernamePasswordAuthenticationToken authToken =
               new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());
@@ -59,7 +59,7 @@ public class AuthController {
    public ResponseEntity<JwtTokenDTO> generateJwtToken(@RequestBody @Valid UserDTO userDTO,
                                                        BindingResult bindingResult) {
       if (bindingResult.hasErrors())
-         throw new NotValidUserException();
+         throw new NotValidUserException(bindingResult.getFieldErrors());
 
       User user = userDTO.convertToUser();
       registrationService.register(user);

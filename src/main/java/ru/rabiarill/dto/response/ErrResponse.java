@@ -1,6 +1,6 @@
 package ru.rabiarill.dto.response;
 
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,10 +35,10 @@ public class ErrResponse {
               .add(new ErrMessageDTO(e.getMessage(), LocalDateTime.now()));
    }
 
-   public void addErrors(BindingResult bindingResult) {
+   public void addErrors(List<FieldError> fieldErrors) {
       this.errors.addAll(
-              bindingResult.getAllErrors().stream()
-                      .map(e -> new ErrMessageDTO(e.getObjectName() + " - " + e.getDefaultMessage(), LocalDateTime.now()))
+              fieldErrors.stream()
+                      .map(e -> new ErrMessageDTO(e.getField() + " - " + e.getDefaultMessage(), LocalDateTime.now()))
                       .collect(Collectors.toList()));
    }
 }

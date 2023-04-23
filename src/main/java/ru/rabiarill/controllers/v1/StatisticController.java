@@ -51,13 +51,13 @@ public class StatisticController {
    }
 
    @GetMapping("/{category}")
-   public ResponseEntity<StatisticDTO> getByUserAndCategory(@PathVariable("category") String category,
+   public ResponseEntity<StatisticDTO> getByUserAndCategory(
+           @PathVariable("category") String category,
            @RequestParam(name = "startDate", required = false)
            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss:SSS") LocalDateTime startDate,
 
            @RequestParam(name = "endDate", required = false)
            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss:SSS") LocalDateTime endDate) {
-
 
       List<Note> notes;
       int senderId = userUtil.getUserFromContextHolder().getId();
