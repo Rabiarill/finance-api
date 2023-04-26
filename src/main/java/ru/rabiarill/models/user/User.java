@@ -7,6 +7,7 @@ import ru.rabiarill.models.note.Note;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Users")
@@ -96,7 +97,25 @@ public class User {
       return new ModelMapper().map(this, UserDTO.class);
    }
 
-   public boolean idAdmin() {
+   public boolean isAdmin() {
       return this.role.equals(RoleEnum.ROLE_ADMIN);
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      User user = (User) o;
+      return Objects.equals(username, user.username) &&
+              Objects.equals(password, user.password) &&
+              Objects.equals(email, user.email) &&
+              role == user.role &&
+              Objects.equals(notes, user.notes);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(username, password, email, role, notes);
+   }
+
 }

@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -131,5 +132,22 @@ public class Note {
       this.category = noteWithNewFields.getCategory();
       this.description = noteWithNewFields.getDescription();
       this.transactionDate = noteWithNewFields.getTransactionDate();
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Note note = (Note) o;
+      return Objects.equals(owner, note.owner) &&
+              Objects.equals(amount, note.amount) &&
+              Objects.equals(category, note.category) &&
+              Objects.equals(description, note.description) &&
+              Objects.equals(transactionDate, note.transactionDate);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(owner, amount, category, description, transactionDate);
    }
 }

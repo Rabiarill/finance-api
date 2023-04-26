@@ -15,6 +15,6 @@ public class UserUtil {
    }
 
    public boolean hasAccess(User user, Note note) {
-      return user.getId() == note.getOwner().getId() || user.idAdmin();
+      return user.getId() == note.getOwner().getId() || user.isAdmin();
    }
 }
