@@ -1,6 +1,7 @@
 package ru.rabiarill.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    private final UserDetailsServiceImpl userDetailsService;
    private final JwtFilter jwtFilter;
+   @Value("${spring.profiles.active}")
+   private String activeProfile;
 
    @Autowired
    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtFilter jwtFilter) {
@@ -30,15 +33,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    @Override
    protected void configure(HttpSecurity http) throws Exception {
-      http
-              .csrf().disable()
-              .authorizeRequests()
-              .antMatchers("/finance-api/v1/auth/**").permitAll()
-              .anyRequest().authenticated()
-              .and()
-              .sessionManagement()
-              .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-      http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+      if (activeProfile.equals("test")) {
+         http.csrf().disable().authorizeRequests().anyRequest().permitAll();
+      } else {
+         http
+                 .csrf().disable()
+                 .authorizeRequests()
+                 .antMatchers("/finance-api/v1/auth/**").permitAll()
+                 .anyRequest().authenticated()
+                 .and()
+                 .sessionManagement()
+                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+      }
    }
 
    @Override

@@ -42,7 +42,8 @@ public class Note {
    public Note() {
    }
 
-   public Note(BigDecimal amount, String category, String description, LocalDateTime transactionDate) {
+   public Note(int id, BigDecimal amount, String category, String description, LocalDateTime transactionDate) {
+      this.id = id;
       this.amount = amount;
       this.category = category;
       this.description = description;

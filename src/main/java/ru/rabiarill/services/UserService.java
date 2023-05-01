@@ -45,4 +45,9 @@ public class UserService {
       userRepository.deleteById(id);
    }
 
+   @Transactional
+   public void deleteAll(){
+      userRepository.deleteAll();
+   }
+
 }

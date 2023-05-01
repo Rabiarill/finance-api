@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rabiarill.exception.model.note.NoteNotFoundException;
 import ru.rabiarill.models.note.Note;
-import ru.rabiarill.models.user.User;
 import ru.rabiarill.repositories.NoteRepository;
-import ru.rabiarill.util.security.UserUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,12 +15,10 @@ import java.util.List;
 public class NoteService {
 
    private final NoteRepository noteRepository;
-   private final UserUtil userUtil;
 
    @Autowired
-   public NoteService(NoteRepository noteRepository, UserUtil userUtil) {
+   public NoteService(NoteRepository noteRepository) {
       this.noteRepository = noteRepository;
-      this.userUtil = userUtil;
    }
 
    public List<Note> findAll() {
@@ -55,10 +51,6 @@ public class NoteService {
 
    @Transactional
    public void save(Note note) {
-      User sender = userUtil.getUserFromContextHolder();
-
-      note.setOwner(sender);
-
       noteRepository.save(note);
    }
 
@@ -71,6 +63,11 @@ public class NoteService {
    @Transactional
    public void delete(int id) {
       noteRepository.deleteById(id);
+   }
+
+   @Transactional
+   public void deleteAll(){
+      noteRepository.deleteAll();
    }
 
 }

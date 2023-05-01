@@ -150,11 +150,11 @@ class NoteControllerTest {
    }
 
    private User getMockUser(){
-      return new User("Doe", "1", "doe@mail.com", RoleEnum.ROLE_USER );
+      return new User(1, "Doe", "1", "doe@mail.com", RoleEnum.ROLE_USER );
    }
 
    private List<Note> getMockNoteList(){
-      return List.of(new Note(BigDecimal.valueOf(423), "testCategory", "", LocalDateTime.of(2020,11,5,16,30)),
-              new Note(BigDecimal.valueOf(423), "testCategory", "", LocalDateTime.of(2020,12,20,16,35)));
+      return List.of(new Note(1, BigDecimal.valueOf(423), "testCategory", "", LocalDateTime.of(2020,11,5,16,30)),
+              new Note(2, BigDecimal.valueOf(423), "testCategory", "", LocalDateTime.of(2020,12,20,16,35)));
    }
 }

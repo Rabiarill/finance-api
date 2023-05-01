@@ -1,3 +1,5 @@
+spring.profiles.active=dev
+
 # Data source
 spring.datasource.driver-class-name=
 spring.datasource.url=

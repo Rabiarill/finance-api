@@ -46,6 +46,8 @@ public class NoteController {
          throw new NotValidNoteException(bindingResult.getFieldErrors());
 
       Note noteToSave = noteDTO.convertToNote();
+      User sender = userUtil.getUserFromContextHolder();
+      noteToSave.setOwner(sender);
 
       noteService.save(noteToSave);
 
