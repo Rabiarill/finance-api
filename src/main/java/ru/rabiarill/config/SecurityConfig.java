@@ -39,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          http
                  .csrf().disable()
                  .authorizeRequests()
-                 .antMatchers("/finance-api/v1/auth/**").permitAll()
+                 .antMatchers("/finance-api/v1/auth/**", "/swagger-resources/**",
+                         "/swagger-ui/**", "/v2/api-docs", "/webjars/**").permitAll()
                  .anyRequest().authenticated()
                  .and()
                  .sessionManagement()
