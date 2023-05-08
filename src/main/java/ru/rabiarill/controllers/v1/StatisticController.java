@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rabiarill.dto.statistic.StatisticByCategoryDTO;
 import ru.rabiarill.dto.statistic.StatisticDTO;
 import ru.rabiarill.models.note.Note;
 import ru.rabiarill.services.NoteService;
@@ -67,9 +68,9 @@ public class StatisticController {
       else
          notes = noteService.findByOwnerAndCategory(senderId, category);
 
-      StatisticDTO statistic = statisticService.createByCategory(category, notes);
+      StatisticByCategoryDTO statistic = statisticService.createFromList(category, notes);
 
-      return new ResponseEntity<>(statistic, HttpStatus.OK);
+      return new ResponseEntity<>(new StatisticDTO(List.of(statistic)), HttpStatus.OK);
    }
 
 }
