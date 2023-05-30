@@ -12,11 +12,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import ru.rabiarill.dto.model.user.UserDTO;
 import ru.rabiarill.enumeration.RoleEnum;
-import ru.rabiarill.exception.model.NoAccessException;
 import ru.rabiarill.exception.model.user.NotValidUserException;
 import ru.rabiarill.models.user.User;
 import ru.rabiarill.services.UserService;
+import ru.rabiarill.util.security.JwtUtil;
 import ru.rabiarill.util.security.UserUtil;
+import ru.rabiarill.util.validators.UserValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,6 +32,10 @@ class UserControllerTest {
    @Mock
    UserUtil userUtil;
    @Mock
+   UserValidator userValidator;
+   @Mock
+   JwtUtil jwtUtil;
+   @Mock
    BindingResult mockBindingResult;
 
    @InjectMocks
@@ -43,14 +48,17 @@ class UserControllerTest {
 
    @Test
    void userInfo_ValidUser_ReturnValidResponse(){
+      // given
+      User user = getMockUser();
+
       // when
-      var response = this.userController.userInfo();
+      var response = this.userController.userInfo(user);
 
       // then
       assertNotNull(response);
       assertEquals(HttpStatus.OK, response.getStatusCode());
       assertNotNull(response.getBody());
-      assertEquals(getMockUser(), response.getBody().convertToUser());
+      assertEquals(user, response.getBody().convertToUser());
 
    }
 
@@ -60,12 +68,12 @@ class UserControllerTest {
       User user = getMockUser();
 
       // when
-      var response = this.userController.update(user.convertToUserDTO(), mockBindingResult);
+      var response = this.userController.update(user.convertToUserDTO(), mockBindingResult, user);
 
       // then
       assertNotNull(response);
       assertEquals(HttpStatus.OK, response.getStatusCode());
-      assertNull(response.getBody());
+      assertNotNull(response.getBody());
       verify(userService, only()).save(user);
 
    }
@@ -75,18 +83,7 @@ class UserControllerTest {
       when(mockBindingResult.hasErrors()).thenReturn(true);
 
       assertThrows(NotValidUserException.class,
-              () -> this.userController.update(new UserDTO(), mockBindingResult));
-      verifyNoInteractions(userService);
-
-   }
-
-   @Test
-   void update_UserTryToUpdateNotHimself_ThrowNoAccessException() {
-      User anotherUser = getMockUser();
-      anotherUser.setId(2);
-
-      assertThrows(NoAccessException.class,
-              () -> this.userController.update(anotherUser.convertToUserDTO(), mockBindingResult));
+              () -> this.userController.update(new UserDTO(), mockBindingResult, getMockUser()));
       verifyNoInteractions(userService);
 
    }

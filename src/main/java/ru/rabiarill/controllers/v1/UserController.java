@@ -6,14 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.rabiarill.dto.model.user.UserDTO;
-import ru.rabiarill.exception.model.NoAccessException;
+import ru.rabiarill.dto.security.JwtTokenDTO;
 import ru.rabiarill.exception.model.user.NotValidUserException;
 import ru.rabiarill.models.user.User;
 import ru.rabiarill.services.UserService;
-import ru.rabiarill.util.security.UserUtil;
+import ru.rabiarill.util.security.JwtUtil;
+import ru.rabiarill.util.validators.UserValidator;
 
 import javax.validation.Valid;
 
@@ -23,36 +25,40 @@ public class UserController {
 
    private final UserService userService;
    private final AuthenticationManager authenticationManager;
-   private final UserUtil userUtil;
+   private final UserValidator userValidator;
+   private final JwtUtil jwtUtil;
 
    @Autowired
-   public UserController(UserService userService, AuthenticationManager authenticationManager, UserUtil userUtil) {
+   public UserController(UserService userService, AuthenticationManager authenticationManager,
+                         UserValidator userValidator, JwtUtil jwtUtil) {
       this.userService = userService;
       this.authenticationManager = authenticationManager;
-      this.userUtil = userUtil;
+      this.userValidator = userValidator;
+      this.jwtUtil = jwtUtil;
    }
 
    @GetMapping()
-   public ResponseEntity<UserDTO> userInfo() {
-      UserDTO userDTO = userUtil.getUserFromContextHolder().convertToUserDTO();
-
-      return new ResponseEntity<>(userDTO, HttpStatus.OK);
+   public ResponseEntity<UserDTO> userInfo(@AuthenticationPrincipal(expression = "user") User sender) {
+      return new ResponseEntity<>(sender.convertToUserDTO(), HttpStatus.OK);
    }
 
    @PutMapping()
-   public ResponseEntity<HttpStatus> update(@RequestBody @Valid UserDTO userDTO,
-                                            BindingResult bindingResult) {
+   public ResponseEntity<JwtTokenDTO> update(@RequestBody @Valid UserDTO userDTO,
+                                             BindingResult bindingResult,
+                                             @AuthenticationPrincipal(expression = "user") User sender) {
+      User userToUpdate = userDTO.convertToUser();
+      sender.updateFields(userToUpdate);
+
+      userValidator.validate(sender, bindingResult);
+
       if (bindingResult.hasErrors())
          throw new NotValidUserException(bindingResult.getFieldErrors());
 
-      User sender = userUtil.getUserFromContextHolder();
-      if (sender.getId() != userDTO.getId())
-         throw new NoAccessException("You have no access to update this user");
+      userService.save(sender);
 
-      User userToUpdate = userDTO.convertToUser();
-      userService.save(userToUpdate);
+      JwtTokenDTO response = new JwtTokenDTO(jwtUtil.generateToken(sender.getUsername()));
 
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(response, HttpStatus.OK);
    }
 
    @DeleteMapping()

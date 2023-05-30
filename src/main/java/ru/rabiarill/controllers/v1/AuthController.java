@@ -18,6 +18,7 @@ import ru.rabiarill.exception.model.user.NotValidUserException;
 import ru.rabiarill.models.user.User;
 import ru.rabiarill.services.RegistrationService;
 import ru.rabiarill.util.security.JwtUtil;
+import ru.rabiarill.util.validators.UserValidator;
 
 import javax.validation.Valid;
 
@@ -28,12 +29,14 @@ public class AuthController {
    private final RegistrationService registrationService;
    private final JwtUtil jwtUtil;
    private final AuthenticationManager authenticationManager;
+   private final UserValidator userValidator;
 
    @Autowired
-   public AuthController(RegistrationService registrationService, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+   public AuthController(RegistrationService registrationService, JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserValidator userValidator) {
       this.registrationService = registrationService;
       this.jwtUtil = jwtUtil;
       this.authenticationManager = authenticationManager;
+      this.userValidator = userValidator;
    }
 
    @PostMapping("/login")
@@ -58,10 +61,12 @@ public class AuthController {
    @PostMapping
    public ResponseEntity<JwtTokenDTO> generateJwtToken(@RequestBody @Valid UserDTO userDTO,
                                                        BindingResult bindingResult) {
+      User user = userDTO.convertToUser();
+      userValidator.validate(user, bindingResult);
+
       if (bindingResult.hasErrors())
          throw new NotValidUserException(bindingResult.getFieldErrors());
 
-      User user = userDTO.convertToUser();
       registrationService.register(user);
 
       JwtTokenDTO response = new JwtTokenDTO(jwtUtil.generateToken(user.getUsername()));

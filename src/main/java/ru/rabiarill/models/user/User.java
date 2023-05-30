@@ -102,6 +102,11 @@ public class User {
       return this.role.equals(RoleEnum.ROLE_ADMIN);
    }
 
+   public void updateFields(User userToUpdate){
+      this.username = userToUpdate.getUsername();
+      this.email = userToUpdate.getEmail();
+   }
+
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;

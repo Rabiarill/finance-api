@@ -8,8 +8,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.rabiarill.dto.model.user.UserDTO;
 import ru.rabiarill.exception.model.user.NotValidUserException;
+import ru.rabiarill.exception.model.user.UserNotFoundException;
 import ru.rabiarill.models.user.User;
 import ru.rabiarill.services.UserService;
+import ru.rabiarill.util.validators.UserValidator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,10 +23,12 @@ import java.util.stream.Collectors;
 public class AdminUserController {
 
    private final UserService userService;
+   private final UserValidator userValidator;
 
    @Autowired
-   public AdminUserController(UserService userService) {
+   public AdminUserController(UserService userService, UserValidator userValidator) {
       this.userService = userService;
+      this.userValidator = userValidator;
    }
 
    @GetMapping()
@@ -44,10 +48,16 @@ public class AdminUserController {
    @PutMapping()
    public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid UserDTO userDTO,
                                                 BindingResult bindingResult) {
+
+      User userToUpdate = userDTO.convertToUser();
+      if (userToUpdate.getId() == 0)
+         throw new UserNotFoundException("The user id to update must not be null");
+
+      userValidator.validate(userToUpdate, bindingResult);
+
       if (bindingResult.hasErrors())
          throw new NotValidUserException(bindingResult.getFieldErrors());
 
-      User userToUpdate = userDTO.convertToUser();
       userService.save(userToUpdate);
 
       return new ResponseEntity<>(HttpStatus.OK);
